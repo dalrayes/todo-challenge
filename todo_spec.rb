@@ -1,5 +1,6 @@
 require 'time'
 require 'date'
+require_relative 'todo'
 
 
 describe "task" do
@@ -39,7 +40,7 @@ describe "task" do
 
   describe "#complete?" do
     it "returns whether task is complete" do
-      expect(task.complete?).not_to be_complete
+      expect(task.complete?).to be_falsey
     end
   end
 
@@ -77,14 +78,24 @@ describe "todo list" do
   end
 
   describe "#complete_all!" do
-    before {
-      fake1 = instance_double("Task", :status => "incomplete")
-      fake2 = instance_double("Task", :status => "incomplete")
-      fake3 = instance_double("Task", :status => "incomplete")
+    # before {
+    #   fake1 = instance_double("Task", :status => "incomplete")
+    #   fake2 = instance_double("Task", :status => "incomplete")
+    #   fake3 = instance_double("Task", :status => "incomplete")
+    #   todo.add_task(fake1)
+    #   todo.add_task(fake2)
+    #   todo.add_task(fake3)
+    # }
+
+    let(:fake1) {Task.new('blah', 'blah')}
+    let(:fake2) {Task.new('blahblah', 'blahblah')}
+    let(:fake3) {Task.new('blahblahblah', 'blahblahblah')}
+
+    before do
       todo.add_task(fake1)
       todo.add_task(fake2)
       todo.add_task(fake3)
-    }
+    end
 
     it "marks first task as complete" do
       expect{ todo.complete_all! }.to change { fake1.status }
@@ -102,13 +113,14 @@ describe "todo list" do
   describe "#complete?" do
 
     it "returns true when all tasks have been completed" do
+
       todo.add_task(complete_task)
-      expect(todo.complete?).to eq(true)
+      expect(todo.complete?).to be_truthy
     end
 
     it "returns false when not all tasks are complete" do
       todo.add_task(incomplete_task)
-      expect(todo.complete?).to eq(false)
+      expect(todo.complete?).to be_falsey
     end
   end
 
@@ -116,6 +128,7 @@ describe "todo list" do
 
 
     it "returns array of completed tasks" do
+
       todo.add_task(complete_task)
       todo.add_task(incomplete_task)
       expect(todo.completed_tasks).to eq([complete_task])
@@ -125,6 +138,7 @@ describe "todo list" do
   describe "#incomplete_tasks" do
 
     it "returns array of incomplete tasks" do
+
       todo.add_task(complete_task)
       todo.add_task(incomplete_task)
       expect(todo.incomplete_tasks).to eq([incomplete_task])
